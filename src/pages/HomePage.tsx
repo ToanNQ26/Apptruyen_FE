@@ -45,16 +45,16 @@ function HomePage() {
 
       switch (rankingTab) {
         case "month":
-          res = await viewDaily.getTopMonthly();
+          res = await viewDaily.getTopMonthly(10);
           setHotStories(res.result);
           break;
 
         case "week":
-          res = await viewDaily.getTopWeekly();
+          res = await viewDaily.getTopWeekly(10);
           break;
 
         case "day":
-          res = await viewDaily.getTopDaily();
+          res = await viewDaily.getTopDaily(10);
           break;
       }
       setRankingStories(res.result);
