@@ -176,7 +176,16 @@ a {
     justify-content: center;
   }
 
-  .comic-detail {
-    grid-template-columns: 1fr;
+}
+
+@media (max-width: 1024px) {
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .nav a {
+    white-space: nowrap;
   }
 }

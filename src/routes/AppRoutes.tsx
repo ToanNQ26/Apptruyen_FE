@@ -12,6 +12,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import FollowPage from "../pages/FollowPage";
 import HistoryPage from "../pages/HistoryPage";
 import RankingStories from "../pages/RankingStories";
+import InforUserPage from "../pages/InforUserPage";
 
 function AppRoutes() {
   return (
@@ -27,6 +28,7 @@ function AppRoutes() {
         <Route path="/theo-doi" element={<FollowPage />} />
         <Route path="/lich-su" element={<HistoryPage />} />
         <Route path="/xep-hang" element={<RankingStories />} />
+        <Route path="/ho-so" element={<InforUserPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

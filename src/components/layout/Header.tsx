@@ -4,6 +4,10 @@ import { useAuth } from "../../contexts/authContext";
 import { useEffect, useState } from "react";
 import type { Genre } from "../../models/genre.model";
 import * as GenreService from "../../services/genre.service";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 function Header() {
   
@@ -11,6 +15,23 @@ function Header() {
 
   const [genre, setGenre] = useState<Genre[]>([]);
   const [hoverGenre, setHoverGenre] = useState<Genre | null>(null);
+  const [openGenre, setOpenGenre] = useState(false);
+  const [openUserMenu, setOpenUserMenu] = useState(false);
+  const navigate = useNavigate();
+
+  const handleUserClick = () => {
+  if (window.innerWidth < 1024) {
+    if (isLoggedIn) {
+      navigate("/ho-so");
+    } else {
+      navigate("/dang-nhap");
+    }
+    return;
+  } else if(window.innerWidth <= 1280)  {
+    setOpenUserMenu((prev) => !prev);
+  }
+  return;  
+};
 
   useEffect(() => {
     const fectGenre = async () => {
@@ -32,46 +53,57 @@ function Header() {
           <NavLink to="/">Trang chủ</NavLink>
           <NavLink to="/theo-doi">Theo dõi</NavLink>
           <NavLink to="/lich-su">Lịch sử</NavLink>
-          <div className="relative group">
+          <div
+            className="relative z-100 group"
+            onMouseLeave={() => setOpenGenre(false)}
+          >
             <button
+              onClick={() => setOpenGenre((prev) => !prev)}
               className="
-                flex items-center gap-1
-                text-white
-                hover:text-orange-400
-                transition
-              "
+                  flex items-center gap-1
+                  text-white
+                  hover:text-orange-400
+                  transition
+                "
             >
               Thể loại
-
               <ChevronDown
                 size={16}
-                className="
-                  transition-transform duration-200
-                  group-hover:rotate-180
-                "
+                className={`
+                    transition-transform duration-200
+                    ${openGenre ? "rotate-180" : ""}
+                    group-hover:rotate-180
+                  `}
               />
             </button>
 
             <div
-              className="
-                absolute top-full left-1/2 -translate-x-1/2
+              className={`
                 pt-3
-                z-50
-
-                opacity-0 invisible
-                translate-y-2 scale-95
-
-                group-hover:opacity-100
-                group-hover:visible
-                group-hover:translate-y-0
-                group-hover:scale-100
-
                 transition-all duration-200
-              "
-            >
+
+                ${openGenre ? "block" : "hidden"}
+
+                xl:block
+                xl:opacity-0
+                xl:invisible
+                xl:translate-y-2
+                xl:scale-95
+                xl:group-hover:opacity-100
+                xl:group-hover:visible
+                xl:group-hover:translate-y-0
+                xl:group-hover:scale-100
+              `}
+               >
               <div
                 className="
-                  w-212.5
+                  absolute xl:left-1/2 -translate-x-1/2
+                  max-sm:-left-21
+                  border-size
+                  w-[calc(100vw-2rem)]
+                  sm:w-[calc(100vw-4rem)]
+                  sm:left-1
+                  xl:w-212.5
                   bg-slate-800
                   border border-slate-700
                   rounded-xl
@@ -79,7 +111,7 @@ function Header() {
                   p-5
                 "
               >
-                <div className="grid grid-cols-5 gap-x-6 gap-y-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-5 sm:gap-4 xl:gap-x-6 sm:gap-y-2 ">
                   {genre.map((g) => (
                     <Link
                       key={g._id}
@@ -89,7 +121,7 @@ function Header() {
                         px-2 py-1
                         rounded-md
                         text-slate-200
-
+                        min-w-0
                         hover:bg-slate-700
                         hover:text-orange-400
 
@@ -121,19 +153,20 @@ function Header() {
               </div>
             </div>
           </div>
-          <NavLink to="/xep-hang">Xếp hạng</NavLink>  
+          <NavLink to="/xep-hang">Xếp hạng</NavLink>
           <NavLink to="/tim-kiem">Tìm truyện</NavLink>
         </nav>
 
         <div className="relative group">
-
           <button
+            onClick={handleUserClick}
             className="
               flex items-center gap-2
               bg-gray-800 border border-gray-700
               text-white
               px-4 py-2
               rounded-xl
+              whitespace-nowrap
               transition
               hover:bg-gray-700
               hover:border-orange-500
@@ -143,35 +176,51 @@ function Header() {
             {user?.name ?? "Tài khoản"}
             <ChevronDown
               size={14}
-              className="
-                transition-transform
-                group-hover:rotate-180
-              "
+              className={`
+                transition-transform duration-200
+                ${openUserMenu ? "lg:rotate-180" : ""}
+                sm:group-hover:rotate-180
+              `}
             />
           </button>
 
           <div
-            className="
-              absolute right-0 top-full mt-3
-              w-48
-              bg-gray-900
-              border border-gray-700
-              rounded-xl
-              shadow-2xl
-              overflow-hidden
-              opacity-0 invisible translate-y-2
-              transition-all duration-200
-              group-hover:opacity-100
-              group-hover:visible
-              group-hover:translate-y-0
-              z-50
-            "
+            className={`
+            absolute
+            left-0
+            top-full
+            w-48
+
+            bg-gray-900
+            border border-gray-700
+            rounded-xl
+            shadow-2xl
+            overflow-hidden
+            z-50
+
+            transition-all duration-200
+
+            ${
+              openUserMenu
+                ? "block"
+                : "hidden"
+            }
+
+            lg:group-hover:block
+            max-lg:opacity-0
+            max-lg:invisible
+            max-lg:translate-y-2
+
+            lg:group-hover:opacity-100
+            lg:group-hover:visible
+            lg:group-hover:translate-y-0
+          `}
           >
-          {isLoggedIn ? (
-            <>
-            <Link
-              to="/ho-so"
-              className="
+            {isLoggedIn ? (
+              <>
+                <Link
+                  to="/ho-so"
+                  className="
                 group
                 flex items-center gap-3
                 px-4 py-3
@@ -180,15 +229,15 @@ function Header() {
                 hover:text-orange-500
                 transition
               "
-            >
-             <User size={17} className="text-violet-500"/>
-             Hồ sơ
-            </Link>
+                >
+                  <User size={17} className="text-violet-500" />
+                  Hồ sơ
+                </Link>
 
-            <Link
-              onClick={logout}
-              to="/"
-              className="
+                <Link
+                  onClick={logout}
+                  to="/"
+                  className="
                 flex items-center gap-3
                 px-4 py-3
                 text-white
@@ -196,16 +245,16 @@ function Header() {
                 hover:text-orange-500
                 transition
               "
-            >
-              <LogOut size={17} className="text-violet-500"/>
-               Đăng xuất
-            </Link>
-            </>
-          ) : (
-            <>
-            <Link
-              to="/dang-nhap"
-              className="
+                >
+                  <LogOut size={17} className="text-violet-500" />
+                  Đăng xuất
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/dang-nhap"
+                  className="
                 flex items-center gap-3
                 px-4 py-3
                 text-white
@@ -213,15 +262,15 @@ function Header() {
                 hover:text-orange-500
                 transition
               "
-            >
-            <LogIn size={17} className="text-violet-500" />
-            Đăng nhập
-            </Link>
+                >
+                  <LogIn size={17} className="text-violet-500" />
+                  Đăng nhập
+                </Link>
 
-            <Link
-              onClick={() => localStorage.removeItem("token")}
-              to="/dang-ky"
-              className="
+                <Link
+                  onClick={() => localStorage.removeItem("token")}
+                  to="/dang-ky"
+                  className="
                 flex items-center gap-3
                 px-4 py-3
                 text-white
@@ -229,15 +278,13 @@ function Header() {
                 hover:text-orange-500
                 transition
               "
-            >
-              <UserPlus size={17} className="text-violet-500" />
-              Đăng ký
-            </Link>
-            </>
-          )}
-
+                >
+                  <UserPlus size={17} className="text-violet-500" />
+                  Đăng ký
+                </Link>
+              </>
+            )}
           </div>
-
         </div>
       </div>
     </header>

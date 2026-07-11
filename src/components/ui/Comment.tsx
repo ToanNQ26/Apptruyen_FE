@@ -147,9 +147,11 @@ function Comments({
     }
   };
 
+  console.log(window.innerWidth);
+
   return (
     <LoadingLayout loading={loading}>
-      <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full  sm:w-[92%] sm:max-w-300  bg-linear-to-b from-slate-950 via-slate-900 to-slate-950">
         <div className="space-y-6">
           <section className="rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-xl shadow-slate-950/20 backdrop-blur">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -161,8 +163,7 @@ function Comments({
                   Viết bình luận của bạn
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-400">
-                  Nhập nội dung bình luận và gửi. Story ID và chapter ID đã được
-                  gán tự động từ trang truyện.
+                  Nhập nội dung bình luận và gửi.
                 </p>
               </div>
             </div>

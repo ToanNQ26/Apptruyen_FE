@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   getChapterByChapterNumber,
@@ -13,6 +13,13 @@ import { useAuth } from "../contexts/authContext";
 import { addLocalHistory } from "../services/local.history.service";
 import { increaseView } from "../services/viewdaily.service";
 import Comments from "../components/ui/Comment";
+import {
+  House,
+  ChevronLeft,
+  ChevronRight,
+  Undo2,
+  ChevronDown,
+} from "lucide-react";
 
 function ReadChapterPage() {
   const { slug, chapterNumber } = useParams();
@@ -23,9 +30,24 @@ function ReadChapterPage() {
   const [showTopNav, setShowTopNav] = useState(false);
   const [enableFloatingNav, setEnableFloatingNav] = useState(false);
   const { isLoggedIn } = useAuth();
-  const [chapterId, setChapterId] = useState<string >();
+  const [chapterId, setChapterId] = useState<string>();
 
   const navigate = useNavigate();
+
+  const currentIndex = useMemo(() => {
+    return Number(chapterNumber);
+  }, [chapterNumber]);
+
+  const nextChapter = useMemo(() => {
+    const nextIndex = currentIndex + 1;
+    if (!listChapter) {
+      return null;
+    }
+    if (listChapter.length + 1 > nextIndex) {
+      return nextIndex;
+    }
+    return null;
+  }, [listChapter, currentIndex]);
 
   useEffect(() => {
     if (!slug || !chapterNumber) return;
@@ -35,7 +57,6 @@ function ReadChapterPage() {
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
-
     const handleScroll = () => {
       const currentY = window.scrollY;
 
@@ -131,187 +152,171 @@ function ReadChapterPage() {
       <div className="flex justify-center">
         <div
           className={`
-
-          w-[95%]
-          max-w-225
-
-          z-50
-          transition-all
-          duration-300
-
-          ${
-            enableFloatingNav
-              ? `fixed ${showTopNav ? "top-0" : "bottom-0"}`
-              : `relative mx-auto `
-          }
-        `}
+      w-[100vw]
+      sm:w-full
+      max-w-225
+      z-50
+      transition-all
+      duration-300
+      ${
+        enableFloatingNav
+          ? `fixed left-1/2 -translate-x-1/2 ${
+              showTopNav ? "top-0" : "bottom-0"
+            }`
+          : "relative mx-auto"
+      }
+    `}
         >
           <div
             className="
-            flex
-            items-center
-            overflow-hidden
-
-            bg-[#161b22]/90
-            backdrop-blur-xl
-
-            border
-            border-[#2d333b]
-
-            shadow-[0_10px_40px_rgba(0,0,0,0.55)]
-          "
+        flex
+        items-center
+        overflow-hidden
+        border
+        border-[#2d333b]
+        bg-[#161b22]/90
+        backdrop-blur-xl
+        shadow-lg
+        sm:shadow-[0_10px_40px_rgba(0,0,0,0.55)]
+      "
           >
             {/* HOME */}
-
             <Link
               to="/"
               className="
-              w-17.5
-              h-14
-
-              flex
-              items-center
-              justify-center
-
-              bg-[#21262d]
-              hover:bg-[#30363d]
-
-              text-blue-400
-              hover:text-blue-300
-
-              text-xl
-              transition-all
-            "
+          flex
+          h-12
+          w-12
+          items-center
+          justify-center
+          bg-[#21262d]
+          text-blue-400
+          transition
+          hover:bg-[#30363d]
+          hover:text-blue-300
+          sm:h-14
+          sm:w-17.5
+        "
             >
-              🏠
+              <House className="h-5 w-5 sm:h-6 sm:w-6" />
             </Link>
 
             {/* PREVIOUS */}
-
             <button
+              disabled={currentIndex <= 1}
+              onClick={() => {
+                if (currentIndex <= 1) return;
+                navigate(`/truyen/${slug}/chuong/${currentIndex - 1}`);
+              }}
               className="
-              w-15
-              h-14
-
-              flex
-              items-center
-              justify-center
-
-              bg-[#21262d]
-              hover:bg-[#30363d]
-
-              text-red-400
-              hover:text-red-300
-
-              text-2xl
-              transition-all
-            "
+          flex
+          h-12
+          w-11
+          items-center
+          justify-center
+          bg-[#21262d]
+          text-red-400
+          transition
+          hover:bg-[#30363d]
+          hover:text-red-300
+          disabled:cursor-not-allowed
+          disabled:opacity-40
+          disabled:hover:bg-[#21262d]
+          sm:h-14
+          sm:w-15
+        "
             >
-              ❮
+              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
 
             {/* SELECT */}
-
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <select
                 value={chapterNumber}
                 onChange={(e) => {
                   navigate(`/truyen/${slug}/chuong/${e.target.value}`);
                 }}
                 className="
-                w-full
-                h-14
-
-                appearance-none
-                bg-transparent
-
-                text-gray-200
-                text-[17px]
-                font-medium
-
-                px-5
-                pr-12
-
-                outline-none
-                cursor-pointer
-              "
+            h-12
+            w-full
+            cursor-pointer
+            appearance-none
+            bg-transparent
+            px-3
+            pr-10
+            text-sm
+            font-medium
+            text-gray-200
+            outline-none
+            sm:h-14
+            sm:px-5
+            sm:pr-12
+            sm:text-base
+          "
               >
                 {listChapter?.map((chapter) => (
                   <option
                     key={chapter._id}
                     value={chapter.chapterNumber}
-                    className="
-                    bg-[#161b22]
-                    text-gray-200
-                  "
+                    className="bg-[#161b22] text-gray-200"
                   >
                     Chapter {chapter.chapterNumber}
                   </option>
                 ))}
               </select>
 
-              <div
-                className="
-                absolute
-                right-4
-                top-1/2
-                -translate-y-1/2
-
-                text-gray-400
-                pointer-events-none
-              "
-              >
-                ▼
+              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 sm:right-4">
+                <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
             </div>
 
             {/* NEXT */}
-
             <button
+              disabled={!nextChapter}
+              onClick={() => {
+                if (!nextChapter) return;
+                navigate(`/truyen/${slug}/chuong/${nextChapter}`);
+              }}
               className="
-              w-15
-              h-14
-
-              flex
-              items-center
-              justify-center
-
-              bg-[#21262d]
-              hover:bg-[#30363d]
-
-              text-green-400
-              hover:text-green-300
-
-              text-2xl
-              transition-all
-            "
+          flex
+          h-12
+          w-11
+          items-center
+          justify-center
+          bg-[#21262d]
+          text-green-400
+          transition
+          hover:bg-[#30363d]
+          hover:text-green-300
+          disabled:cursor-not-allowed
+          disabled:opacity-40
+          disabled:hover:bg-[#21262d]
+          sm:h-14
+          sm:w-15
+        "
             >
-              ❯
+              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
 
             {/* BACK */}
-
             <Link
               to={`/truyen/${slug}`}
               className="
-              w-17.5
-              h-14
-
-              flex
-              items-center
-              justify-center
-
-              bg-[#21262d]
-              hover:bg-[#30363d]
-
-              text-yellow-400
-              hover:text-yellow-300
-
-              text-xl
-              transition-all
-            "
+          flex
+          h-12
+          w-12
+          items-center
+          justify-center
+          bg-[#21262d]
+          text-yellow-400
+          transition
+          hover:bg-[#30363d]
+          hover:text-yellow-300
+          sm:h-14
+          sm:w-17.5
+        "
             >
-              ↩
+              <Undo2 className="h-5 w-5 sm:h-6 sm:w-6" />
             </Link>
           </div>
         </div>
@@ -343,6 +348,51 @@ function ReadChapterPage() {
               ))}
             </div>
           )}
+          <div className="mt-8 mb-4 flex gap-3 w-full sm:justify-center">
+            <Link
+              to={
+                currentIndex > 1
+                  ? `/truyen/${slug}/chuong/${currentIndex - 1}`
+                  : `#`
+              }
+              className="
+                flex flex-1 items-center justify-center gap-2
+                rounded-xl
+                bg-cyan-500
+                px-5 py-3
+                text-sm font-medium text-white
+                transition
+                hover:bg-cyan-400
+                border border-cyan-500/20
+                sm:flex-none
+                sm:px-6
+                sm:text-base
+                "
+            >
+              <ChevronLeft className="h-5 w-5" />
+              <span>Chapter trước</span>
+            </Link>
+
+            <Link
+              to={nextChapter ? `/truyen/${slug}/chuong/${nextChapter}` : `#`}
+              className="
+                flex flex-1 items-center justify-center gap-2
+                rounded-xl
+                bg-cyan-500
+                px-5 py-3
+                text-sm font-medium text-white
+                transition
+                hover:bg-cyan-400
+                border border-cyan-500/20
+                sm:flex-none
+                sm:px-6
+                sm:text-base
+                "
+            >
+              <span>Chapter sau</span>
+              <ChevronRight className="h-5 w-5" />
+            </Link>
+          </div>
         </div>
         <Comments chapterId={chapterId} storyId={story?._id!} />
       </LoadingLayout>
