@@ -78,11 +78,10 @@ const HistoryPage = () => {
 
       {/* Device History */}
       {activeTab === "device" && (
-        <div>
+        <div className="">
           <h3 className="text-xl font-semibold text-white mb-6">
             Lịch sử đọc trên thiết bị này
           </h3>
-
           <div
             className="
               grid

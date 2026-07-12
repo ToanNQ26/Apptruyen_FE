@@ -181,7 +181,7 @@ function HomePage() {
           <section>
             <h2 className="section-title">Truyện mới cập nhật</h2>
 
-            <div className="comic-grid">
+            <div className="comic-grid ">
               {stories.map((story) => (
                 <StoryCard story={story} key={story._id}/>
               ))}

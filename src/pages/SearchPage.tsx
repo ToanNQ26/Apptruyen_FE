@@ -43,6 +43,7 @@ export default function SearchPage() {
   const page = Number(searchParams.get("page")) || 1;
   const status = searchParams.get("status") || "all";
   const sort = searchParams.get("sort") || "newest";
+  const [openGenre, setOpenGenre] = useState(false);
   const genreIds =
     searchParams.get("genres")?.split(",").filter(Boolean) || [];
 
@@ -120,14 +121,14 @@ export default function SearchPage() {
         Tìm kiếm truyện
       </h1>
 
-      <div className="flex gap-6">
+      <div className="flex gap-6 max-sm:gap-0  max-sm:flex-col-reverse">
         {/* LEFT */}
-        <div className="w-[70%]">
+        <div className="w-[70%] max-sm:w-full">
           {/* STATUS */}
           <div className="mb-4">
             <p className="section-title">Trạng thái</p>
 
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-1 gap-2 max-sm:justify-center ">
               {statuses.map((st) => (
                 <button
                   key={st.value}
@@ -137,7 +138,7 @@ export default function SearchPage() {
                     params.set("page", "1");
                     setSearchParams(params);
                   }}
-                  className={`px-3 py-1 rounded border text-sm transition
+                  className={`px-3 py-1 rounded border text-sm max-sm:texl-xs max-sm:px-2 transition
                     ${
                       status === st.value
                         ? "bg-blue-600 border-blue-500"
@@ -151,8 +152,8 @@ export default function SearchPage() {
           </div>
 
           {/* HEADER */}
-          <div className="flex justify-between items-center mb-4">
-            <p className="section-title">
+          <div className="flex justify-between items-center mb-4 ">
+            <p className="max-sm:hidden" >
               Kết quả:{" "}
               <span className="text-blue-400 font-bold">
                 {stories.length}
@@ -160,34 +161,37 @@ export default function SearchPage() {
             </p>
 
             {/* SORT */}
-            <div className="relative w-60">
-              <button
-                onClick={() => setOpenSort(!openSort)}
-                className="w-full flex justify-between items-center bg-[#111a2e] px-4 py-2 rounded-lg border border-gray-700"
-              >
-                {sortLabelMap[sort]}
-                <ChevronDown size={16} />
-              </button>
+            <div className="w-full">
+              <p className="mb-4 sm:hidden">Sắp xếp theo:</p>
+              <div className="relative w-60 max-sm:w-full ml-auto">
+                <button
+                  onClick={() => setOpenSort(!openSort)}
+                  className="w-full flex justify-between items-center bg-[#111a2e] px-4 py-2 rounded-lg border border-gray-700"
+                >
+                  {sortLabelMap[sort]}
+                  <ChevronDown size={16} />
+                </button>
 
-              {openSort && (
-                <div className="absolute mt-2 w-full bg-[#111a2e] border border-gray-700 rounded-lg z-10">
-                  {Object.keys(sortMap).map((o) => (
-                    <button
-                      key={o}
-                      onClick={() => {
-                        const params = new URLSearchParams(searchParams);
-                        params.set("sort", sortMap[o]);
-                        params.set("page", "1");
-                        setSearchParams(params);
-                        setOpenSort(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 hover:bg-blue-600"
-                    >
-                      {o}
-                    </button>
-                  ))}
-                </div>
-              )}
+                {openSort && (
+                  <div className="absolute mt-2 w-full bg-[#111a2e] border border-gray-700 rounded-lg z-10">
+                    {Object.keys(sortMap).map((o) => (
+                      <button
+                        key={o}
+                        onClick={() => {
+                          const params = new URLSearchParams(searchParams);
+                          params.set("sort", sortMap[o]);
+                          params.set("page", "1");
+                          setSearchParams(params);
+                          setOpenSort(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 hover:bg-blue-600"
+                      >
+                        {o}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -202,7 +206,7 @@ export default function SearchPage() {
         </div>
 
         {/* RIGHT FILTER */}
-        <div className="w-[30%]">
+        <div className="w-[30%] max-sm:w-full">
           <div className="flex items-center justify-between mb-4">
             <h2>Thể loại</h2>
 
@@ -210,12 +214,97 @@ export default function SearchPage() {
               Đã chọn: {selectedGenres.length}
             </span>
           </div>
+          
+          <div className="relative sm:hidden mb-4">
+            <button
+              onClick={() => setOpenGenre(!openGenre)}
+              className="w-full flex items-center justify-between
+                        bg-[#111a2e]
+                        border border-gray-700
+                        rounded-lg
+                        px-4 py-2"
+            >
+              <span>
+                {selectedGenres.length
+                  ? `${selectedGenres.length} thể loại`
+                  : "Chọn thể loại"}
+              </span>
 
-          <InputLayout
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="Tìm thể loại..."
-          />
+              <ChevronDown
+                className={`transition ${
+                  openGenre ? "rotate-180" : ""
+                }`}
+                size={18}
+              />
+            </button>
+
+            {openGenre && (
+              <div
+                className="
+                absolute
+                left-0
+                mt-2
+                w-full
+                max-h-80
+                overflow-y-auto
+                rounded-xl
+                bg-[#111a2e]
+                border border-gray-700
+                shadow-xl
+                z-50
+                p-3"
+              >
+                <InputLayout
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder="Tìm thể loại..."
+                />
+
+                <div className="mt-3 flex flex-col gap-2">
+                  {filteredGenres.map((g) => {
+                    const active = genreIds.includes(g._id);
+
+                    return (
+                      <button
+                        key={g._id}
+                        onClick={() => toggleGenre(g._id)}
+                        className={`
+                          flex
+                          items-center
+                          gap-3
+                          px-3
+                          py-2
+                          rounded-lg
+                          transition
+                          ${
+                            active
+                              ? "bg-blue-600 text-white"
+                              : "hover:bg-gray-800"
+                          }
+                        `}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={active}
+                          readOnly
+                        />
+
+                        <span>{g.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="max-sm:hidden">
+            <InputLayout
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="Tìm thể loại..."
+            />
+          </div>
 
           {/* selected */}
           {selectedGenres.length > 0 && (
@@ -234,7 +323,7 @@ export default function SearchPage() {
           )}
 
           {/* full list */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 max-sm:hidden">
             {filteredGenres.map((g) => {
               const active = genreIds.includes(g._id);
 
