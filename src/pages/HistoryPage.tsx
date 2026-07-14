@@ -123,31 +123,31 @@ const HistoryPage = () => {
             "
           >
             {!isLoggedIn ? (
-  <p className="text-gray-400">
-    Vui lòng{" "}
-    <Link
-      to="/dang-nhap"
-      className="text-orange-400 hover:underline"
-    >
-      đăng nhập
-    </Link>{" "}
-    để xem lịch sử đọc.
-  </p>
-) : accountHistory.length === 0 ? (
-  <p className="text-gray-400">
-    Bạn chưa có lịch sử đọc nào.
-  </p>
-) : (
-  accountHistory.map((history) => (
-    <HistoryCard
-      key={history._id}
-      title={history.story.title}
-      slug={history.story.slug}
-      coverUrl={history.story.coverUrl}
-      chapterNumber={history.chapter.chapterNumber}
-    />
-  ))
-)}
+                <p className="text-gray-400">
+                  Vui lòng{" "}
+                  <Link
+                    to="/dang-nhap"
+                    className="text-orange-400 hover:underline"
+                  >
+                    đăng nhập
+                  </Link>{" "}
+                  để xem lịch sử đọc.
+                </p>
+              ) : accountHistory.length === 0 ? (
+                <p className="text-gray-400">
+                  Bạn chưa có lịch sử đọc nào.
+                </p>
+              ) : (
+                accountHistory.map((history) => (
+                  <HistoryCard
+                    key={history._id}
+                    title={history.story.title}
+                    slug={history.story.slug}
+                    coverUrl={history.story.coverUrl}
+                    chapterNumber={history.chapter.chapterNumber}
+                  />
+                ))
+              )}
           </div>
         </div>
       )}

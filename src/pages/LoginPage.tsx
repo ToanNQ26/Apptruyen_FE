@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { login } from '../services/auth.service';
 import { useAuth } from '../contexts/authContext';
-import type { ApiResponse } from '../models/api.respone';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { loginauth } = useAuth();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,14 +83,24 @@ const LoginPage = () => {
           <label className="mb-2 block text-sm font-medium text-slate-300">
             Mật khẩu
           </label>
-          <input
-            type="password"
-            placeholder="Nhập mật khẩu"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30"
-            required
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Nhập mật khẩu"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-white"
+              aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         <button
