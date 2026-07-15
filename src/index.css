@@ -128,28 +128,21 @@ a {
   color: #9ca3af;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .header-inner {
     height: auto;
-    padding: 16px 0;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .nav {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-}
-
-@media (max-width: 1024px) {
-  .nav {
-    flex-wrap: wrap;
-    justify-content: center;
+    padding: 14px 0;
     gap: 12px;
   }
 
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 1024px) {
   .nav a {
     white-space: nowrap;
   }
