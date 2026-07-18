@@ -102,7 +102,7 @@ function ComicDetail({
 };
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="container mx-auto px-4 py-8 md:px-6">
 
       {/* TOP SECTION */}
 
@@ -110,11 +110,11 @@ function ComicDetail({
 
         {/* Cover */}
 
-        <div className="flex-shrink-0">
+        <div className="shrink-0 mx-auto lg:mx-0">
           <img
             src={coverUrl}
             alt={title}
-            className="w-[260px] h-[370px] object-cover rounded-2xl shadow-xl"
+            className="w-full max-w-70 rounded-2xl object-cover shadow-xl shadow-black/20 md:max-w-[320px]"
           />
         </div>
 
@@ -122,104 +122,68 @@ function ComicDetail({
 
         <div className="flex-1">
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between items-center mb-6">
-            <h1 className="text-4xl font-bold text-white">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+            <h1 className="text-3xl font-bold text-white sm:text-4xl max-xl:text-center">
               {title}
             </h1>
 
             <button
-              className="
-                mt-4 md:mt-0
-                px-5 py-2.5
-                rounded-xl
-                bg-zinc-800
-                border border-zinc-700
-                text-zinc-200
-                font-semibold
-                transition-all duration-200
-                hover:bg-blue-600
-                hover:border-blue-500
-                hover:text-white
-                shadow-lg
-                shadow-blue-500/20
-                active:scale-95
-              "
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-zinc-800 border border-zinc-700 text-zinc-200 font-semibold transition-all duration-200 hover:bg-blue-600 hover:border-blue-500 hover:text-white shadow-lg shadow-blue-500/20 active:scale-95"
               onClick={handleFollow}
               disabled={loading}
             >
-
-            {
-              loading
+              {loading
                 ? "Đang xử lý..."
                 : isFollowed
                   ? "❤️ Đã theo dõi"
-                  : "🤍 Theo dõi"
-            }
-
+                  : "🤍 Theo dõi"}
             </button>
           </div>
 
           <div className="space-y-4 text-gray-300">
-
-            <p>
-              <span className="font-semibold text-white">
-                Tác giả:
-              </span>{" "}
+            <p className="text-base sm:text-lg">
+              <span className="font-semibold text-white">Tác giả:</span>{" "}
               {author}
             </p>
 
-            <p>
-              <span className="font-semibold text-white">
-                Trạng thái:
-              </span>{" "}
+            <div className="flex  gap-2 sm:flex-row sm:items-center sm:flex-wrap">
+              <span className="font-semibold text-white">Trạng thái:</span>
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium
-                  ${
-                    status === "completed"
-                      ? "bg-green-600 text-white"
-                      : "bg-yellow-500 text-black"
-                  }`}
+                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                  status === "completed"
+                    ? "bg-green-600 text-white"
+                    : "bg-yellow-500 text-black"
+                }`}
               >
                 {statusMap[status || ""] || "Không xác định"}
               </span>
-            </p>
+            </div>
 
-            <p>
-              <span className="font-semibold text-white">
-                Lượt xem:
-              </span>{" "}
+            <p className="text-base sm:text-lg">
+              <span className="font-semibold text-white">Lượt xem:</span>{" "}
               {views.toLocaleString()}
             </p>
 
-            {/* Genres */}
-
-            <div className="flex flex-wrap gap-2 ">
-             <p className="font-semibold text-white">Thể loại:</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-semibold text-white">Thể loại:</span>
               {genres.map((genre) => (
-                <a
+                <span
                   key={genre}
                   className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm"
                 >
-                {genre}
-                </a>
+                  {genre}
+                </span>
               ))}
-
             </div>
-
           </div>
 
           {/* Description */}
 
-          <div className=" flex gap-4 items-center mt-3">
-
-            <h2 className="block font-semibold text-white">
-              Giới thiệu:
-            </h2>
-
-            <p className="leading-8 text-gray-400">
+          <div className="mt-6 rounded-3xl bg-zinc-900/70 p-5 text-gray-300">
+            <h2 className="mb-3 text-lg font-semibold text-white">Giới thiệu:</h2>
+            <p className="leading-7 text-gray-300">
               {description}
             </p>
-
           </div>
 
         </div>

@@ -20,7 +20,7 @@ const ChapterUI = ({
     <div className="container mx-auto mt-16 px-4">
 
   {/* HEADER */}
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
+  <div className="flex flex-col gap-5 mb-8 md:flex-row md:items-center md:justify-between">
 
     <div>
       <h2 className="text-3xl font-bold text-white">
@@ -32,52 +32,25 @@ const ChapterUI = ({
       </p>
     </div>
 
-    <div className="flex gap-3">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
 
       <Link
         to={`/truyen/${slug}/chuong/1`}
-        className="
-          px-5 py-3
-          rounded-xl
-          bg-[#1b2437]
-          hover:bg-blue-500
-          text-white
-          font-semibold
-          transition-all duration-300
-          shadow-lg shadow-blue-500/20
-        "
+        className="px-5 py-3 rounded-xl bg-[#1b2437] hover:bg-blue-500 text-white font-semibold transition-all duration-300 shadow-lg shadow-blue-500/20 text-center"
       >
-      Đọc từ đầu
+        Đọc từ đầu
       </Link>
 
       <Link
         to={`/truyen/${slug}/chuong/${chapters.length}`}
-        className="
-          px-5 py-3
-          rounded-xl
-          bg-[#1b2437]
-          hover:bg-blue-500
-          text-white
-          font-semibold
-          transition-all duration-300
-          shadow-lg shadow-blue-500/20
-        "
+        className="px-5 py-3 rounded-xl bg-[#1b2437] hover:bg-blue-500 text-white font-semibold transition-all duration-300 shadow-lg shadow-blue-500/20 text-center"
       >
         Đọc mới nhất
       </Link>
 
       <Link
         to={`/truyen/${slug}/chuong/${continueChapter || 1}`}
-        className="
-          px-5 py-3
-          rounded-xl
-          bg-[#1b2437]
-          hover:bg-blue-500
-          text-white
-          font-semibold
-          transition-all duration-300
-          shadow-lg shadow-blue-500/20
-        "
+        className="px-5 py-3 rounded-xl bg-[#1b2437] hover:bg-blue-500 text-white font-semibold transition-all duration-300 shadow-lg shadow-blue-500/20 text-center"
       >
          Đọc tiếp
       </Link>
@@ -98,7 +71,7 @@ const ChapterUI = ({
           block
           rounded-2xl
           border border-[#263149]
-          bg-gradient-to-r
+          bg-linear-to-r
           from-[#182135]
           to-[#1e2940]
 

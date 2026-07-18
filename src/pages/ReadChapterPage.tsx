@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   getChapterByChapterNumber,
@@ -29,6 +29,8 @@ function ReadChapterPage() {
   const [listChapter, setListChapter] = useState<Chapter[]>();
   const [showTopNav, setShowTopNav] = useState(false);
   const [enableFloatingNav, setEnableFloatingNav] = useState(false);
+  const [chapterDropdownOpen, setChapterDropdownOpen] = useState(false);
+  const dropdownContainerRef = useRef<HTMLDivElement | null>(null);
   const { isLoggedIn } = useAuth();
   const [chapterId, setChapterId] = useState<string>();
 
@@ -49,11 +51,31 @@ function ReadChapterPage() {
     return null;
   }, [listChapter, currentIndex]);
 
+  const dropdownDirectionUp = enableFloatingNav && !showTopNav;
+
   useEffect(() => {
     if (!slug || !chapterNumber) return;
 
     localStorage.setItem(`reading_${slug}`, chapterNumber);
   }, [slug, chapterNumber]);
+
+  useEffect(() => {
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (
+        chapterDropdownOpen &&
+        dropdownContainerRef.current &&
+        !dropdownContainerRef.current.contains(event.target as Node)
+      ) {
+        setChapterDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleDocumentClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleDocumentClick);
+    };
+  }, [chapterDropdownOpen]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -152,7 +174,7 @@ function ReadChapterPage() {
       <div className="flex justify-center">
         <div
           className={`
-      w-[100vw]
+      w-screen
       sm:w-full
       max-w-225
       z-50
@@ -237,23 +259,23 @@ function ReadChapterPage() {
                   navigate(`/truyen/${slug}/chuong/${e.target.value}`);
                 }}
                 className="
-            h-12
-            w-full
-            cursor-pointer
-            appearance-none
-            bg-transparent
-            px-3
-            pr-10
-            text-sm
-            font-medium
-            text-gray-200
-            outline-none
-            sm:h-14
-            sm:px-5
-            sm:pr-12
-            sm:text-base
-          "
-              >
+                h-12
+                w-full
+                cursor-pointer
+                appearance-none
+                bg-transparent
+                px-3
+                pr-10
+                text-sm
+                font-medium
+                text-gray-200
+                outline-none
+                sm:h-14
+                sm:px-5
+                sm:pr-12
+                sm:text-base
+              "
+                  >
                 {listChapter?.map((chapter) => (
                   <option
                     key={chapter._id}
