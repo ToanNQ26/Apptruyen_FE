@@ -173,7 +173,7 @@ function Header() {
             <NavLink to="/tim-kiem">Tìm truyện</NavLink>
           </nav>
 
-          <div className="relative groupm ">
+          <div className="relative group ">
             <button
               onClick={handleUserClick}
               className="
@@ -205,7 +205,7 @@ function Header() {
               absolute
               left-0
               top-full
-              w-48
+              w-full
 
               bg-gray-900
               border border-gray-700

@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import type { Story } from "../../models/story.model";
+import React from "react";
 
 type Props = {
   story: Story;
 };
 
-function StoryCard({ story }: Props) {
+const StoryCard = React.memo(function StoryCard({ story }: Props) {
   return (
     <Link
       to={`/truyen/${story.slug}`}
@@ -47,6 +48,6 @@ function StoryCard({ story }: Props) {
       </div>
     </Link>
   );
-}
+})
 
 export default StoryCard;
