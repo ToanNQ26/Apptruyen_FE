@@ -147,6 +147,7 @@ const LoginPage = () => {
             setErrorMessage("Đăng nhập thất bại!");
           }}
           size="large"
+          width="100%%"
         />
 
         <p className="mt-6 text-center text-sm text-slate-400">
