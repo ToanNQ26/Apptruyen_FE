@@ -5,29 +5,28 @@ import * as followService from "../services/follow.service";
 import LoadingLayout from "../components/ui/LoadingLayout";
 import Pagination from "../components/ui/Pagination";
 import { BookMarked } from "lucide-react";
+import { useIsLoggedIn } from "../stores/auth.store";
 
 function FollowPage() {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const isLoggedIn = useIsLoggedIn();
 
 
 
   useEffect(() => {
     
-    setIsLoggedIn(!!token);
 
-    if (!token) {
+    if (!isLoggedIn) {
       setLoading(false);
       return;
     }
 
     loadFollowedStories();
-  }, [page]);
+  }, [page,isLoggedIn]);
 
   const loadFollowedStories = async () => {
     try {

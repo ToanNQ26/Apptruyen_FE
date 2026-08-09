@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import { login } from '../services/auth.service';
-import { useAuth } from '../contexts/authContext';
+import { login, google } from '../services/auth.service';
+import { useAuthStore } from '../stores/auth.store';
+import { getUserInfo } from '../services/user.service';
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -12,7 +14,8 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { loginauth } = useAuth();
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,8 +25,10 @@ const LoginPage = () => {
       setErrorMessage('');
 
       const data = await login({ email, password });
-      console.log("Loggggggg",data);
-      await loginauth(data.result.token);
+      setAccessToken(data.result.accessToken);
+
+      const user = await getUserInfo();
+      setUser(user.result);
 
       navigate('/');
     } catch (error : any ) {
@@ -37,6 +42,29 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
+  const handleGoogleSuccess = async (
+  credentialResponse: CredentialResponse
+) => {
+  if (!credentialResponse.credential) {
+    return;
+  }
+
+  try {
+    const res = await google(credentialResponse.credential);
+
+    // Lưu access token
+    setAccessToken(res.result.accessToken);
+
+    // Cập nhật user, chuyển trang,...
+    const user = await getUserInfo();
+    setUser(user.result);
+
+    navigate('/');
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 
   return (
@@ -89,7 +117,7 @@ const LoginPage = () => {
               placeholder="Nhập mật khẩu"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30"
+              className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-2 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30"
               required
             />
             <button
@@ -106,10 +134,19 @@ const LoginPage = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-lg bg-orange-500 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg bg-orange-500 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60 mb-3"
         >
           {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
+
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            handleGoogleSuccess(credentialResponse);
+          }}
+          onError={() => {
+            setErrorMessage("Đăng nhập thất bại!");
+          }}
+        />
 
         <p className="mt-6 text-center text-sm text-slate-400">
           Chưa có tài khoản?{' '}

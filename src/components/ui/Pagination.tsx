@@ -6,6 +6,8 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
+
+
 export default function Pagination({
   page,
   totalPages,
@@ -33,7 +35,7 @@ export default function Pagination({
 
     return [...new Set(pages)];
   };
-
+// `${item}-${idx}`
   return (
     <div className="flex justify-center mt-8">
       <div className="flex items-center gap-1">
@@ -45,11 +47,11 @@ export default function Pagination({
         >
           <ChevronLeft size={18} className="mx-auto" />
         </button>
-
+        
         {getPages().map((item, idx) =>
           item === "..." ? (
             <span
-              key={idx}
+              key={`dots-${idx}`}
               className="px-3 text-gray-400"
             >
               ...

@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import LoadingLayout from "./LoadingLayout";
-import { useAuth } from "../../contexts/authContext";
+import { useAuthStore } from "../../stores/auth.store";
 import * as commentService from "../../services/comment.service";
 import type { Comment } from "../../models/comment.model";
 
@@ -40,7 +40,8 @@ function Comments({
   chapterId?: string;
   storyId: string;
 }) {
-  const { user, isLoggedIn } = useAuth();
+  const user = useAuthStore((state) => state.user);
+  const isLoggedIn = !!user;
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<Comment[]>([]);
   const [form, setForm] = useState<CommentForm>(emptyForm);

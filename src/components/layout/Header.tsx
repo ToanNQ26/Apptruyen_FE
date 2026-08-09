@@ -1,17 +1,18 @@
 import { Link, NavLink } from "react-router-dom";
 import {LogOut,LogIn,UserPlus,User,ChevronDown,Menu,X} from "lucide-react";
-import { useAuth } from "../../contexts/authContext";
 import { useEffect, useState } from "react";
 import type { Genre } from "../../models/genre.model";
 import * as GenreService from "../../services/genre.service";
 import { useNavigate } from "react-router-dom";
-
-
+import { useAuthStore } from "../../stores/auth.store";
+import { logout as logoutApi } from "../../services/auth.service";
 
 
 function Header() {
   
-  const {user , isLoggedIn, logout} = useAuth();
+  const user = useAuthStore((state) => state.user);
+  const isLoggedIn = !!user;
+  const logout = useAuthStore((state) => state.logout);
 
   const [genre, setGenre] = useState<Genre[]>([]);
   const [hoverGenre, setHoverGenre] = useState<Genre | null>(null);
@@ -34,6 +35,21 @@ function Header() {
     setOpenUserMenu((prev) => !prev);
   }
   return;  
+};
+
+  const handleLogout = async () => {
+  try {
+    await logoutApi(); 
+
+    logout();
+
+    setMobileMenuOpen(false);
+    navigate('/dang-nhap');
+
+  } catch (error) {
+    console.error("Logout failed:", error);
+    logout();
+  }
 };
 
   useEffect(() => {
@@ -251,10 +267,7 @@ function Header() {
                   </Link>
 
                   <button
-                    onClick={() => {
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
+                    onClick={handleLogout}
                     className="
                   flex w-full items-center gap-3
                   px-4 py-3
@@ -350,10 +363,9 @@ function Header() {
                     Hồ sơ
                   </Link>
                   <button
-                    onClick={() => {
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
+                    onClick={
+                      handleLogout
+                    }
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-white hover:bg-slate-800 hover:text-orange-400"
                   >
                     <LogOut size={17} className="text-violet-500" />

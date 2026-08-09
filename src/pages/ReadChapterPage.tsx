@@ -9,7 +9,7 @@ import type { Story } from "../models/story.model";
 import type { Chapter } from "../models";
 import LoadingLayout from "../components/ui/LoadingLayout";
 import { addHistoryStory } from "../services/history.service";
-import { useAuth } from "../contexts/authContext";
+import { useIsLoggedIn } from "../stores/auth.store";
 import { addLocalHistory } from "../services/local.history.service";
 import { increaseView } from "../services/viewdaily.service";
 import Comments from "../components/ui/Comment";
@@ -20,6 +20,9 @@ import {
   Undo2,
   ChevronDown,
 } from "lucide-react";
+import { getListStory } from "../services/story.service";
+import StoryCard from "../components/ui/StoryCard";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 function ReadChapterPage() {
   const { slug, chapterNumber } = useParams();
@@ -31,8 +34,9 @@ function ReadChapterPage() {
   const [enableFloatingNav, setEnableFloatingNav] = useState(false);
   const [chapterDropdownOpen, setChapterDropdownOpen] = useState(false);
   const dropdownContainerRef = useRef<HTMLDivElement | null>(null);
-  const { isLoggedIn } = useAuth();
+  const isLoggedIn = useIsLoggedIn();
   const [chapterId, setChapterId] = useState<string>();
+  const [listStory,setListStory] = useState<Story[]>([]);
 
   const navigate = useNavigate();
 
@@ -108,6 +112,8 @@ function ReadChapterPage() {
       try {
         if (!story) return;
         const res = await getListChapter(story?._id);
+        let listStory = await getListStory({genres: story.genres[0]._id, limit: 10})
+        setListStory(listStory.result.stories)
         setListChapter(res.result);
       } catch (err) {
         console.log("Lỗi khi lấy danh sách chapter", err);
@@ -416,6 +422,26 @@ function ReadChapterPage() {
             </Link>
           </div>
         </div>
+        {/* gợi ý truyện theo thể loại */}
+          <div className="mx-auto w-full sm:w-[92%] sm:max-w-300 px-4 mt-10 bg-gray-900">
+            <h2 className="text-2xl font-bold text-white mb-6">
+              Truyện cùng thể loại
+            </h2>
+
+            <ScrollContainer className="overflow-x-auto scrollbar-hide">
+              <div className="flex gap-4">
+                {listStory.map((story) => (
+                  <div
+                    key={story._id}
+                    className="shrink-0 w-36 sm:w-40 md:w-44 lg:w-48 xl:w-52  
+                    h-80 sm:h-85 md:h-90  grid"
+                  >
+                    <StoryCard story={story} />
+                  </div>
+                ))}
+              </div>
+            </ScrollContainer>
+            </div>
         <Comments chapterId={chapterId} storyId={story?._id!} />
       </LoadingLayout>
     </div>

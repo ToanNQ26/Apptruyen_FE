@@ -2,14 +2,14 @@ import { Book } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getLocalHistories } from "../services/local.history.service";
 import { HistoryCard } from "../components/ui/HistoryCard";
-import { useAuth } from "../contexts/authContext";
+import { useIsLoggedIn } from "../stores/auth.store";
 import { getHistoryStory } from "../services/history.service";
 import type { HistoryPopulated } from "../dto/historyPopulated";
 import { Link } from "react-router-dom";
 
 const HistoryPage = () => {
 
-  const { isLoggedIn } = useAuth();
+  const isLoggedIn = useIsLoggedIn();
   const [activeTab, setActiveTab] = useState<"device" | "account">(
     "device"
   );

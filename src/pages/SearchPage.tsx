@@ -199,7 +199,7 @@ export default function SearchPage() {
           <LoadingLayout loading={loading}>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {stories.map((s) => (
-                <StoryCard story = {s}/>
+                <StoryCard key={s._id} story = {s}/>
               ))}
             </div>
           </LoadingLayout>

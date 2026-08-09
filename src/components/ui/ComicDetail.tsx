@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import * as followService from "../../services/follow.service";
 import { useEffect, useState } from "react";
+import { useIsLoggedIn } from "../../stores/auth.store";
 
 const statusMap: Record<string, string> = {
   ongoing: "Đang tiến hành",
@@ -36,12 +37,12 @@ function ComicDetail({
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLoginNotice, setShowLoginNotice] =useState(false);
 
-  const token = localStorage.getItem("token");
+  const isLoggedIn = useIsLoggedIn();
   useEffect(() => {
 
     async function loadFollowStatus() {
 
-      if (!token) return;
+      if (!isLoggedIn) return;
 
       try {
 
@@ -59,11 +60,11 @@ function ComicDetail({
 
     loadFollowStatus();
 
-  }, [id, token]);
+  }, [id, isLoggedIn]);
 
   const handleFollow = async () => {
 
-  if (!token) {
+  if (!isLoggedIn) {
 
     setShowLoginNotice(true);
 
