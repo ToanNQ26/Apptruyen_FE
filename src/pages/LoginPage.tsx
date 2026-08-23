@@ -169,6 +169,7 @@ const LoginPage = () => {
               setErrorMessage("Đăng nhập thất bại!");
             }}
             size="large"
+            text="signin_with"
             width={googleWidth}
           />
         </div>
