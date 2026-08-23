@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { login, google } from '../services/auth.service';
@@ -16,6 +16,27 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const setUser = useAuthStore((state) => state.setUser);
+  const googleContainerRef = useRef<HTMLDivElement>(null);
+  const [googleWidth, setGoogleWidth] = useState(380);
+
+
+
+  useEffect(() => {
+  const element = googleContainerRef.current;
+
+  if (!element) return;
+
+  const observer = new ResizeObserver(([entry]) => {
+    const width = Math.min(entry.contentRect.width, 400);
+
+    setGoogleWidth(Math.floor(width));
+  });
+
+  observer.observe(element);
+
+  return () => observer.disconnect();
+}, []);
+
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -139,16 +160,18 @@ const LoginPage = () => {
           {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
 
-        <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            handleGoogleSuccess(credentialResponse);
-          }}
-          onError={() => {
-            setErrorMessage("Đăng nhập thất bại!");
-          }}
-          size="large"
-          width="100%"
-        />
+        <div ref={googleContainerRef} className="w-full">
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              handleGoogleSuccess(credentialResponse);
+            }}
+            onError={() => {
+              setErrorMessage("Đăng nhập thất bại!");
+            }}
+            size="large"
+            width={googleWidth}
+          />
+        </div>
 
         <p className="mt-6 text-center text-sm text-slate-400">
           Chưa có tài khoản?{' '}

@@ -122,7 +122,6 @@ function Comments({
     setForm({
       content: comment.content,
     });
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCancelEdit = () => {

@@ -113,7 +113,7 @@ const MyStoriesPage = () => {
           </div>
 
           <Link
-            to="/create-story"
+            to="/dang-truyen"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium transition hover:bg-blue-500"
           >
             <Plus className="h-4 w-4" />
@@ -155,7 +155,7 @@ const MyStoriesPage = () => {
             </p>
 
             <Link
-              to="/create-story"
+              to="/dang-truyen"
               className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium hover:bg-blue-500"
             >
               <Plus className="h-4 w-4" />

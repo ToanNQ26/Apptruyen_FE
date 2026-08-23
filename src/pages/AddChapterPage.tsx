@@ -17,7 +17,7 @@ const AddChapterPage = () => {
     <ChapterForm
       storyId={storyId}
       onSuccess={() => {
-        navigate(`/stories/${storyId}/chapters`);
+        navigate(`/`);
       }}
       onCancel={() => {
         navigate(-1);
